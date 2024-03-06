@@ -2,6 +2,7 @@ const  adviceController  = require('./advice.controller');
 
 
 async function addAdvice(data) {
+    console.log(data)
     try {
         const advice = {
             advice: data.advice

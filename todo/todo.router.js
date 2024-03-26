@@ -21,8 +21,8 @@ router.get('/:id', async (req, res) => {
 });
 
 router.get('/categoty/:id', async (req, res) => {
-    console.log("data", req.query);
-    console.log(req.params.id);
+    // console.log("data", req.query);
+    // console.log(req.params.id);
     try {
         const category = await todoService.getTodoByCategory(req.params.id, req.query.cat);
         res.json(category);
@@ -43,11 +43,27 @@ router.get('/categories/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    console.log(req.body);
+    // console.log(req.body);
     try {
         res.send(await todoService.create(req.body));
     } catch (error) {
         res.status(400).json({ message: error.message });
+    }
+});
+
+router.post('/share', async (req, res) => {
+    try {
+        res.send(await todoService.share(req.body));
+    } catch (error) {
+        res.status(404).json({ message: error.message });
+    }
+});
+
+router.post('/unshare', async (req, res) => {
+    try {
+        res.send(await todoService.unshare(req.body));
+    } catch (error) {
+        res.status(404).json({ message: error.message });
     }
 });
 

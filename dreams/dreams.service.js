@@ -66,12 +66,12 @@ async function delDream(id) {
         const dreamToDelete = await dreamsController.getdreamById(id);
         const user = await usersController.getUserById(dreamToDelete.user);
 
-        console.log("user before deletion", user);
+        // console.log("user before deletion", user);
 
         // Use filter to create a new array without the dream to delete
         user.dreams = user.dreams.filter(dream => dream.toString() !== id.toString());
 
-        console.log("user after deletion", user);
+        // console.log("user after deletion", user);
 
         const deletedDream = await dreamsController.deletedream(id);
         await user.save();

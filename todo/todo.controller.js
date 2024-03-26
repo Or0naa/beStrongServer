@@ -32,7 +32,7 @@ async function getTodoByUserAndCategory(userId, category) {
         const todo = await todoModel.aggregate([
             { $match: { user: userId, category: category } }
         ]);
-        console.log(todo);
+        // console.log(todo);
         return todo;
     } catch (error) {
         console.log(error);

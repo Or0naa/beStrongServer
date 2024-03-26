@@ -39,6 +39,9 @@ async function create(data) {
         if (!data.todo) {
             throw new Error('Todo is required');
         }
+        if (!data.category) {
+            data.category = 'כללי';
+        }
         const todo = await todoController.createtodo(data);
         user.todo.unshift(todo._id);
         await user.save();
@@ -111,26 +114,26 @@ async function getCategories(userId) {
 }
 // getCategories("660115e6fc28d3e1ced32a6d");
 
-async function share(id, data) {
+async function share( data) {
+// console.log(data.sharedTask.sharedWith.task)
     try {
-        const user = await usersController.getUserById(data.user);
+        const user = await usersController.getUserByMail(data.sharedTask.sharedWith);
         if (!user) {
             throw new Error('User not found');
         }
-        if (!data.todo) {
+        if (!data.sharedTask.task) {
             throw new Error('Todo is required');
         }
-        const todo = await todoController.gettodoById(id);
+        const todo = await todoController.gettodoById(data.sharedTask.task._id);
+        // console.log({todo});
         if (!todo) {
             throw new Error('Todo not found');
         }
-        // Ensure the user has access to update this todo
-        if (todo.user.toString() !== user._id.toString()) {
-            throw new Error('Unauthorized to update this todo');
-        }
+        
         // Update the todo
-        todo.sharedWith.push(data.user);
+        todo.sharedWith.push(user._id);
         await todo.save();
+        // console.log({ todo });
         return todo;
     }
     catch (error) {
@@ -139,7 +142,7 @@ async function share(id, data) {
     }
 }
 
-async function unshare(id, data) {
+async function unshare(data) {
     try {
         const user = await usersController.getUserById(data.user);
         if (!user) {
@@ -148,16 +151,12 @@ async function unshare(id, data) {
         if (!data.todo) {
             throw new Error('Todo is required');
         }
-        const todo = await todoController.gettodoById(id);
+        const todo = await todoController.gettodoById(data.todo);
         if (!todo) {
             throw new Error('Todo not found');
         }
-        // Ensure the user has access to update this todo
-        if (todo.user.toString() !== user._id.toString()) {
-            throw new Error('Unauthorized to update this todo');
-        }
         // Update the todo
-        todo.sharedWith.pull(data.user);
+        todo.sharedWith = [];
         await todo.save();
         return todo;
     }
@@ -168,7 +167,7 @@ async function unshare(id, data) {
 }
 
 async function getTodoByCategory(userId, category) {
-    console.log({ userId, category });
+    // console.log({ userId, category });
     try {
         const user = await usersController.getUserById(userId);
         if (!user) {
@@ -177,7 +176,7 @@ async function getTodoByCategory(userId, category) {
         
         const todos = await todoController.getAlltodo();
         const filteredTodos = todos.filter(todo => todo.category === category && todo.user.toString() === userId);
-        console.log({ filteredTodos });
+        // console.log({ filteredTodos });
         
         return filteredTodos;
     } catch (error) {

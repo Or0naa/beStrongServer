@@ -175,7 +175,7 @@ async function getTodoByCategory(userId, category) {
         }
         
         const todos = await todoController.getAlltodo();
-        const filteredTodos = todos.filter(todo => todo.category === category && todo.user.toString() === userId);
+        const filteredTodos = todos.filter(todo => todo.category === category && (todo.user.toString() === userId || todo.sharedWith.includes(userId)));
         // console.log({ filteredTodos });
         
         return filteredTodos;
@@ -186,7 +186,6 @@ async function getTodoByCategory(userId, category) {
 }
 
 
-// getTodoByCategory("General", "660115e6fc28d3e1ced32a6d")
 
 module.exports = { gettodoByUser, getOnetodo, create, update, deltodo, getCategories, share, unshare, getTodoByCategory };
 

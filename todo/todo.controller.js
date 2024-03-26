@@ -23,8 +23,9 @@ async function deletetodo(id) {
 
 async function getCategories(userId) {
     const cat =  await todoModel.find({user: userId}).distinct('category');
+    const shareWithMe = await todoModel.find({ sharedWith: userId }).distinct('category');
     // console.log(cat);
-    return cat;
+    return cat.concat(shareWithMe);
 }
 
 async function getTodoByUserAndCategory(userId, category) {
